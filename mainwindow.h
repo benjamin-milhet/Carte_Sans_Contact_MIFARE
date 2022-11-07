@@ -16,6 +16,10 @@ public:
     ~MainWindow();
     char convertirQstringToChar();
     QString convertirIntToQstring(int monEntier);
+    int card_read(uint8_t sect_count);
+    void tag_hat();
+
+
 
 
 private slots:
