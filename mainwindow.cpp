@@ -14,6 +14,17 @@
 
 ReaderName MonLecteur;
 
+BOOL bench = FALSE;
+
+int16_t status = MI_OK;
+uint8_t i;
+char s_buffer[64];
+uint8_t atq[2];
+uint8_t sak[1];
+uint8_t uid[12];
+uint16_t uid_len = 12;
+uint8_t sect_count = 0;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -49,12 +60,6 @@ void MainWindow::on_Connect_clicked() {
     MonLecteur.Type = ReaderCDC;
     MonLecteur.device = 0;
 
-     qDebug() << ("ODALID SDK\n");
-     qDebug() << ("\n");
-     qDebug() << ("NXP MIFARE 'CLASSIC' (1k and 4k) reference demo\n");
-     qDebug() << ("-----------------------------------------------\n");
-     qDebug() << ("https://odalid.com\n\n");
-
      switch(MonLecteur.Type)
      {
          case ReaderTCP:
@@ -80,25 +85,14 @@ void MainWindow::on_Connect_clicked() {
 
     // RF field ON
     RF_Power_Control(&MonLecteur, TRUE, 0);
-
 }
 
-
-void MainWindow::on_Saisie_clicked()
-{
-    int16_t status = MI_OK;
-
-    uint8_t i;
-    char s_buffer[64];
-    uint8_t atq[2];
-    uint8_t sak[1];
-    uint8_t uid[12];
-    uint16_t uid_len = 12;
-    uint8_t sect_count = 0;
+void MainWindow::init() {
     qDebug() << ("Attente carte !\n");
     while(ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len));
     if (status != MI_OK){
         qDebug() << ("No available tag in RF field\n");
+        this->close();
     }
 
     qDebug() << ("Tag found: UID=");
@@ -122,29 +116,35 @@ void MainWindow::on_Saisie_clicked()
         sect_count = 40;
     }
 
-    QString Text = ui->fenetre_saisi->toPlainText();
-    qDebug() << "Text : " << Text;
-    status = OpenCOM(&MonLecteur);
 
     status = card_read(sect_count);
-    tag_hat();
+    this->tag_hat();
+
+}
+
+
+void MainWindow::on_Saisie_clicked()
+{
+
+    /*QString Text = ui->fenetre_saisi->toPlainText();
+    qDebug() << "Text : " << Text;
+    status = OpenCOM(&MonLecteur);*/
 
 }
 
 void MainWindow::tag_hat(){
-    int16_t status = MI_OK;
-    status = OpenCOM(&MonLecteur);
-
     // Halt the tag
     status = ISO14443_3_A_Halt(&MonLecteur);
     if (status != MI_OK){
         qDebug() << ("Failed to halt the tag\n");
+        this->close();
     }
 
 
     status = LEDBuzzer(&MonLecteur, LED_GREEN_ON+LED_YELLOW_ON+LED_RED_ON+LED_GREEN_ON);
     DELAYS_MS(1);
     status = LEDBuzzer(&MonLecteur, LED_GREEN_ON);
+    //this->init();
 }
 
 
@@ -170,7 +170,6 @@ QString MainWindow::convertirIntToQstring(int monEntier){
 
 int MainWindow::card_read(uint8_t sect_count)
 {
-    BOOL bench = FALSE;
 
     uint8_t data[240] = {0};
     clock_t t0, t1;
@@ -193,7 +192,7 @@ int MainWindow::card_read(uint8_t sect_count)
 
 
         memset(data, 0x00, 240);
-        status = Mf_Classic_Read_Sector(&MonLecteur, TRUE, sect, data, AuthKeyA, 3);
+        status = Mf_Classic_Read_Sector(&MonLecteur, TRUE, sect, data, AuthKeyA, 0);
 
         if (status != MI_OK){
             if (bench)
@@ -239,7 +238,12 @@ int MainWindow::card_read(uint8_t sect_count)
     return MI_OK;
 }
 
+void MainWindow::close() {
+    RF_Power_Control(&MonLecteur, FALSE, 0);
+    CloseCOM(&MonLecteur);
+}
 
-
-
-
+void MainWindow::on_connectCarte_clicked()
+{
+    this->init();
+}
