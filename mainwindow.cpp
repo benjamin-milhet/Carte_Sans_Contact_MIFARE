@@ -126,9 +126,9 @@ void MainWindow::init() {
 void MainWindow::on_Saisie_clicked()
 {
 
-    /*QString Text = ui->fenetre_saisi->toPlainText();
+    QString Text = ui->fenetre_saisi->toPlainText();
     qDebug() << "Text : " << Text;
-    status = OpenCOM(&MonLecteur);*/
+    status = OpenCOM(&MonLecteur);
 
 }
 
@@ -159,7 +159,7 @@ void MainWindow::on_Quitter_clicked()
 
 char MainWindow::convertirQstringToChar() {
     char DataIn[16];
-    char res = sprintf(DataIn, ui->Affichage->toPlainText().toUtf8().data(), 16);
+    char res = sprintf(DataIn, ui->fenetre_saisi->toPlainText().toUtf8().data(), 16);
 
     return res;
 }
@@ -186,15 +186,16 @@ int MainWindow::card_read(uint8_t sect_count)
         t0 = clock();
     }
     bloc = 0;
+    QString res = "";
     for (sect = 0; sect < sect_count; sect++){
         if (!bench)
         qDebug() << ("Reading sector %02d : ", sect);
 
 
         memset(data, 0x00, 240);
-        status = Mf_Classic_Read_Sector(&MonLecteur, TRUE, sect, data, AuthKeyA, 0);
-
-        if (status != MI_OK){
+        status = Mf_Classic_Read_Sector(&MonLecteur, TRUE, 2, data, AuthKeyA, 2);
+        res += (char*)data;
+        /*if (status != MI_OK){
             if (bench)
                 qDebug() << ("Read sector %02d ", sect);
             qDebug() << ("[Failed]\n");
@@ -216,20 +217,25 @@ int MainWindow::card_read(uint8_t sect_count)
                     qDebug() << ("%02d : ", bloc);
                     // Each blocks is 16-bytes wide
                     for (offset = 0; offset < 16; offset++){
-                        qDebug() << ("%02X ", data[16 * bloc + offset]);
+                        res += convertirIntToQstring(("%02X ", data[16 * bloc + offset]));
                     }
                     for (offset = 0; offset < 16; offset++){
                         if (data[16 * bloc + offset] >= ' '){
-                            qDebug() << ("%c", data[16 * bloc + offset]);
+                            res += convertirIntToQstring(("%c", data[16 * bloc + offset]));
                         } else
-                            qDebug() << (".");
+                            res += (".");
 
                     }
-                    qDebug() << ("\n");
+                    res += ("\n");
                 }
             }
-        }
+        }*/
     }
+    ui->fenetre_saisi->setText(res);
+    ui->fenetre_saisi->update();
+
+
+    qDebug() << res;
 
     if (bench){
         t1 = clock();

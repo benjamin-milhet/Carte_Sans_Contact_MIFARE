@@ -55,8 +55,8 @@
      <rect>
       <x>190</x>
       <y>160</y>
-      <width>104</width>
-      <height>71</height>
+      <width>411</width>
+      <height>131</height>
      </rect>
     </property>
    </widget>
@@ -76,8 +76,8 @@
    <widget class="QPushButton" name="connectCarte">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>270</y>
+      <x>40</x>
+      <y>230</y>
       <width>121</width>
       <height>23</height>
      </rect>
