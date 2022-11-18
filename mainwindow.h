@@ -14,7 +14,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    char convertirQstringToChar();
+    uint8_t* convertirQstringToChar(QString DataText);
     QString convertirIntToQstring(int monEntier);
     int card_read(uint8_t sect_count);
     void tag_hat();

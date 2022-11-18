@@ -88,47 +88,42 @@ void MainWindow::on_Connect_clicked() {
 }
 
 void MainWindow::init() {
-    qDebug() << ("Attente carte !\n");
-    while(ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len));
-    if (status != MI_OK){
-        qDebug() << ("No available tag in RF field\n");
-        this->close();
-    }
+    uint8_t data[16];
+    int16_t status = 0;
+    uint8_t atq[2];
+    uint8_t sak[1];
+    uint8_t uid[12];
+    uint16_t uid_len = 12;
 
-    qDebug() << ("Tag found: UID=");
-    for (i = 0; i < uid_len; i++)
-        qDebug() << ("%02X", uid[i]);
-    qDebug() << (" ATQ=%02X%02X SAK=%02X\n", atq[1], atq[0], sak[0]);
+    status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
 
+     status = Mf_Classic_Read_Block(&MonLecteur, TRUE, 9, data, AuthKeyA, 2);
 
-    /*if ((atq[1] != 0x00) || ((atq[0] != 0x02) && (atq[0] != 0x04) && (atq[0] != 0x18))){
-        printf("This is not a Mifare classic tag\n");
-        goto tag_halt;
-    }*/
-
-    if ((sak[0] & 0x1F) == 0x08){
-        // Mifare classic 1k : 16 sectors, 3+1 blocks in each sector
-        qDebug() << ("Tag appears to be a Mifare classic 1k\n");
-        sect_count = 16;
-    } else if ((sak[0] & 0x1F) == 0x18){
-        // Mifare classic 4k : 40 sectors, 3+1 blocks in 32-first sectors, 15+1 blocks in the 8-last sectors
-        qDebug() << ("Tag appears to be a Mifare classic 4k\n");
-        sect_count = 40;
-    }
-
-
-    status = card_read(sect_count);
-    this->tag_hat();
-
+     ui->fenetre_saisi->setText((char*)data);
+     ui->fenetre_saisi->update();
 }
 
 
 void MainWindow::on_Saisie_clicked()
 {
+    int16_t status = 0;
+    uint8_t atq[2];
+    uint8_t sak[1];
+    uint8_t uid[12];
+    uint16_t uid_len = 12;
 
-    QString Text = ui->fenetre_saisi->toPlainText();
-    qDebug() << "Text : " << Text;
-    status = OpenCOM(&MonLecteur);
+    status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
+
+
+
+    QString nomText = ui->nom->toPlainText();
+    QString prenomText = ui->prenom->toPlainText();
+
+    char DataIn[16];
+    sprintf(DataIn, prenomText.toUtf8().data(), 16);
+    auto res = (uint8_t*)DataIn;
+    qDebug() << res;
+    status = Mf_Classic_Write_Block(&MonLecteur, TRUE, 9, res, AuthKeyB, 2);
 
 }
 
@@ -157,91 +152,22 @@ void MainWindow::on_Quitter_clicked()
     qApp->quit();
 }
 
-char MainWindow::convertirQstringToChar() {
-    char DataIn[16];
-    char res = sprintf(DataIn, ui->fenetre_saisi->toPlainText().toUtf8().data(), 16);
-
-    return res;
-}
-
 QString MainWindow::convertirIntToQstring(int monEntier){
     return QString::number(monEntier);
 }
 
-int MainWindow::card_read(uint8_t sect_count)
-{
+uint8_t* MainWindow::convertirQstringToChar(QString DataText) {
+    char DataIn[240];
+    sprintf(DataIn, DataText.toUtf8().data(), 240);
+    qDebug() << (uint8_t*)DataIn;
+    return (uint8_t*)DataIn;
+}
 
-    uint8_t data[240] = {0};
-    clock_t t0, t1;
-    uint8_t bloc_count, bloc, sect;
-    uint8_t offset;
-    int16_t status = 0;
-    uint8_t atq[2];
-    uint8_t sak[1];
-    uint8_t uid[12];
-    uint16_t uid_len = 12;
-
-    if (bench){
-        qDebug() << ("Reading %d sectors...\n", sect_count);
-        t0 = clock();
-    }
-    bloc = 0;
-    QString res = "";
-    for (sect = 0; sect < sect_count; sect++){
-        if (!bench)
-        qDebug() << ("Reading sector %02d : ", sect);
+int MainWindow::card_read(uint8_t sect_count){
 
 
-        memset(data, 0x00, 240);
-        status = Mf_Classic_Read_Sector(&MonLecteur, TRUE, 2, data, AuthKeyA, 2);
-        res += (char*)data;
-        /*if (status != MI_OK){
-            if (bench)
-                qDebug() << ("Read sector %02d ", sect);
-            qDebug() << ("[Failed]\n");
-            qDebug() << ("  %s (%d)\n", GetErrorMessage(status), status);
-            status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
-            if (status != MI_OK){
-                 qDebug() << ("No available tag in RF field\n");
-            }
-        }
-        else{
-            if (!bench){
-                qDebug() << ("[OK]\n");
-                // Display sector's data
-                if (sect < 32)
-                    bloc_count = 3;
-                else
-                    bloc_count = 15;
-                for (bloc = 0; bloc < bloc_count; bloc++){
-                    qDebug() << ("%02d : ", bloc);
-                    // Each blocks is 16-bytes wide
-                    for (offset = 0; offset < 16; offset++){
-                        res += convertirIntToQstring(("%02X ", data[16 * bloc + offset]));
-                    }
-                    for (offset = 0; offset < 16; offset++){
-                        if (data[16 * bloc + offset] >= ' '){
-                            res += convertirIntToQstring(("%c", data[16 * bloc + offset]));
-                        } else
-                            res += (".");
 
-                    }
-                    res += ("\n");
-                }
-            }
-        }*/
-    }
-    ui->fenetre_saisi->setText(res);
-    ui->fenetre_saisi->update();
-
-
-    qDebug() << res;
-
-    if (bench){
-        t1 = clock();
-        qDebug() << ("Time elapsed: %ldms\n", (t1 - t0) / (CLOCKS_PER_SEC/1000));
-    }
-    return MI_OK;
+     return MI_OK;
 }
 
 void MainWindow::close() {

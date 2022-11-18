@@ -40,21 +40,21 @@
    <widget class="QPushButton" name="Saisie">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>180</y>
+      <x>490</x>
+      <y>70</y>
       <width>75</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Saisie</string>
+     <string>Mise à jour</string>
     </property>
    </widget>
    <widget class="QTextEdit" name="fenetre_saisi">
     <property name="geometry">
      <rect>
-      <x>190</x>
-      <y>160</y>
+      <x>50</x>
+      <y>310</y>
       <width>411</width>
       <height>131</height>
      </rect>
@@ -63,8 +63,8 @@
    <widget class="QPushButton" name="Quitter">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>330</y>
+      <x>50</x>
+      <y>510</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -76,14 +76,34 @@
    <widget class="QPushButton" name="connectCarte">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>230</y>
+      <x>200</x>
+      <y>460</y>
       <width>121</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>Sélectionner la Carte</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="nom">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>40</y>
+      <width>151</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="prenom">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>80</y>
+      <width>151</width>
+      <height>31</height>
+     </rect>
     </property>
    </widget>
   </widget>
