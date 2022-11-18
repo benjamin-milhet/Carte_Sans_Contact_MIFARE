@@ -6,66 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>393</width>
+    <height>525</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="Connect">
-    <property name="geometry">
-     <rect>
-      <x>60</x>
-      <y>40</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Connect</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="Affichage">
-    <property name="geometry">
-     <rect>
-      <x>190</x>
-      <y>30</y>
-      <width>104</width>
-      <height>71</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="Saisie">
-    <property name="geometry">
-     <rect>
-      <x>490</x>
-      <y>70</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Mise à jour</string>
-    </property>
-   </widget>
-   <widget class="QTextEdit" name="fenetre_saisi">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>310</y>
-      <width>411</width>
-      <height>131</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="Quitter">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>510</y>
-      <width>75</width>
+      <x>130</x>
+      <y>460</y>
+      <width>111</width>
       <height>23</height>
      </rect>
     </property>
@@ -73,94 +27,220 @@
      <string>Quitter</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="connectCarte">
+   <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>40</x>
-      <y>80</y>
-      <width>121</width>
-      <height>23</height>
+      <x>30</x>
+      <y>20</y>
+      <width>341</width>
+      <height>111</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Sélectionner la Carte</string>
+    <property name="title">
+     <string>ODALID</string>
     </property>
+    <widget class="QPushButton" name="Connect">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>121</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Se connecter</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="connectCarte">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>121</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Sélectionner la Carte</string>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="Affichage">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>20</y>
+       <width>161</width>
+       <height>71</height>
+      </rect>
+     </property>
+    </widget>
    </widget>
-   <widget class="QTextEdit" name="nom">
+   <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>40</y>
-      <width>151</width>
-      <height>31</height>
+      <x>30</x>
+      <y>140</y>
+      <width>341</width>
+      <height>131</height>
      </rect>
     </property>
+    <property name="title">
+     <string>Identité</string>
+    </property>
+    <widget class="QPushButton" name="Saisie">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>121</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Mettre à jour</string>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="nom">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="placeholderText">
+      <string>Prénom</string>
+     </property>
+    </widget>
+    <widget class="QTextEdit" name="prenom">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>80</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="placeholderText">
+      <string>Nom</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>51</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Prénom :</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>60</y>
+       <width>41</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Nom :</string>
+     </property>
+    </widget>
    </widget>
-   <widget class="QTextEdit" name="prenom">
+   <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
      <rect>
-      <x>610</x>
-      <y>80</y>
-      <width>151</width>
-      <height>31</height>
+      <x>30</x>
+      <y>280</y>
+      <width>341</width>
+      <height>161</height>
      </rect>
     </property>
-   </widget>
-   <widget class="QTextEdit" name="nbUnite">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>170</y>
-      <width>151</width>
-      <height>31</height>
-     </rect>
+    <property name="title">
+     <string>Porte Monnaie</string>
     </property>
-   </widget>
-   <widget class="QSpinBox" name="increment">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>230</y>
-      <width>151</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QSpinBox" name="decrement">
-    <property name="geometry">
-     <rect>
-      <x>610</x>
-      <y>310</y>
-      <width>151</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="incrementButton">
-    <property name="geometry">
-     <rect>
-      <x>640</x>
-      <y>260</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>increment</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="decrementButton">
-    <property name="geometry">
-     <rect>
-      <x>640</x>
-      <y>340</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>decrement</string>
-    </property>
+    <widget class="QTextEdit" name="nbUnite">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>20</y>
+       <width>151</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>30</y>
+       <width>111</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Nombre d'unités :</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="increment">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>80</y>
+       <width>121</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>1000</number>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="incrementButton">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>120</y>
+       <width>121</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Incrémenter</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="decrement">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>80</y>
+       <width>121</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>1000</number>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="decrementButton">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>120</y>
+       <width>121</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Décrémenter</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -168,7 +248,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>393</width>
      <height>21</height>
     </rect>
    </property>

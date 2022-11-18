@@ -173,7 +173,8 @@ void MainWindow::on_incrementButton_clicked()
 {
     status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
     auto dataCompteur = ui->increment->value();
-    status = Mf_Classic_Increment_Value(&MonLecteur, TRUE, 14, dataCompteur, 14, AuthKeyB, 3);
+    status = Mf_Classic_Increment_Value(&MonLecteur, TRUE, 14, dataCompteur, 13, AuthKeyB, 3);
+    status= Mf_Classic_Restore_Value(&MonLecteur, TRUE, 13, 14, AuthKeyA, 3);
 
     this->actualiserIncrement();
 
@@ -183,7 +184,8 @@ void MainWindow::on_decrementButton_clicked()
 {
     status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
     auto dataCompteur = ui->decrement->value();
-    status = Mf_Classic_Decrement_Value(&MonLecteur, TRUE, 14, dataCompteur, 14, AuthKeyB, 3);
+    status = Mf_Classic_Decrement_Value(&MonLecteur, TRUE, 14, dataCompteur, 13, AuthKeyA, 3);
+    status= Mf_Classic_Restore_Value(&MonLecteur, TRUE, 13, 14, AuthKeyA, 3);
 
     this->actualiserIncrement();
 }
