@@ -16,10 +16,9 @@ public:
     ~MainWindow();
     uint8_t* convertirQstringToChar(QString DataText);
     QString convertirIntToQstring(int monEntier);
-    int card_read(uint8_t sect_count);
     void tag_hat();
-    void init();
-    void close();
+    int getNbUniteRestante();
+    void actualiserIncrement();
 
 
 
@@ -34,6 +33,10 @@ private slots:
     void on_Quitter_clicked();
 
     void on_connectCarte_clicked();
+
+    void on_incrementButton_clicked();
+
+    void on_decrementButton_clicked();
 
 private:
     Ui::MainWindow *ui;

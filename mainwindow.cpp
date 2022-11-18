@@ -87,43 +87,26 @@ void MainWindow::on_Connect_clicked() {
     RF_Power_Control(&MonLecteur, TRUE, 0);
 }
 
-void MainWindow::init() {
-    uint8_t data[16];
-    int16_t status = 0;
-    uint8_t atq[2];
-    uint8_t sak[1];
-    uint8_t uid[12];
-    uint16_t uid_len = 12;
-
-    status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
-
-     status = Mf_Classic_Read_Block(&MonLecteur, TRUE, 9, data, AuthKeyA, 2);
-
-     ui->fenetre_saisi->setText((char*)data);
-     ui->fenetre_saisi->update();
-}
-
 
 void MainWindow::on_Saisie_clicked()
 {
-    int16_t status = 0;
-    uint8_t atq[2];
-    uint8_t sak[1];
-    uint8_t uid[12];
-    uint16_t uid_len = 12;
 
     status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
-
-
 
     QString nomText = ui->nom->toPlainText();
     QString prenomText = ui->prenom->toPlainText();
 
-    char DataIn[16];
-    sprintf(DataIn, prenomText.toUtf8().data(), 16);
-    auto res = (uint8_t*)DataIn;
-    qDebug() << res;
-    status = Mf_Classic_Write_Block(&MonLecteur, TRUE, 9, res, AuthKeyB, 2);
+    char DataInPrenom[16];
+    sprintf(DataInPrenom, prenomText.toUtf8().data(), 16);
+    auto dataPrenom = (uint8_t*)DataInPrenom;
+
+    char DataInNom[16];
+    sprintf(DataInNom, nomText.toUtf8().data(), 16);
+    auto dataNom = (uint8_t*)DataInNom;
+
+    status = Mf_Classic_Write_Block(&MonLecteur, TRUE, 9, dataPrenom, AuthKeyB, 2);
+    status = Mf_Classic_Write_Block(&MonLecteur, TRUE, 10, dataNom, AuthKeyB, 2);
+
 
 }
 
@@ -163,19 +146,58 @@ uint8_t* MainWindow::convertirQstringToChar(QString DataText) {
     return (uint8_t*)DataIn;
 }
 
-int MainWindow::card_read(uint8_t sect_count){
-
-
-
-     return MI_OK;
-}
-
-void MainWindow::close() {
-    RF_Power_Control(&MonLecteur, FALSE, 0);
-    CloseCOM(&MonLecteur);
-}
-
 void MainWindow::on_connectCarte_clicked()
 {
-    this->init();
+     status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
+
+     uint8_t dataPrenom[16];
+     status = Mf_Classic_Read_Block(&MonLecteur, TRUE, 9, dataPrenom, AuthKeyA, 2);
+
+     uint8_t dataNom[16];
+     status = Mf_Classic_Read_Block(&MonLecteur, TRUE, 10, dataNom, AuthKeyA, 2);
+
+
+     ui->nom->setText((char*)dataNom);
+     ui->nom->update();
+
+     ui->prenom->setText((char*)dataPrenom);
+     ui->prenom->update();
+
+    this->actualiserIncrement();
+
+}
+
+
+
+void MainWindow::on_incrementButton_clicked()
+{
+    status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
+    auto dataCompteur = ui->increment->value();
+    status = Mf_Classic_Increment_Value(&MonLecteur, TRUE, 14, dataCompteur, 14, AuthKeyB, 3);
+
+    this->actualiserIncrement();
+
+}
+
+void MainWindow::on_decrementButton_clicked()
+{
+    status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
+    auto dataCompteur = ui->decrement->value();
+    status = Mf_Classic_Decrement_Value(&MonLecteur, TRUE, 14, dataCompteur, 14, AuthKeyB, 3);
+
+    this->actualiserIncrement();
+}
+
+void MainWindow::actualiserIncrement(){
+    ui->nbUnite->setPlainText(this->convertirIntToQstring(this->getNbUniteRestante()));
+    ui->nbUnite->update();
+}
+
+int MainWindow::getNbUniteRestante(){
+    status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
+
+    uint32_t dataCompteur = 0;
+    status = Mf_Classic_Read_Value(&MonLecteur, TRUE, 14, &dataCompteur, AuthKeyA, 3);
+
+    return dataCompteur;
 }

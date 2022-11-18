@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>60</x>
-      <y>60</y>
+      <y>40</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -76,8 +76,8 @@
    <widget class="QPushButton" name="connectCarte">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>460</y>
+      <x>40</x>
+      <y>80</y>
       <width>121</width>
       <height>23</height>
      </rect>
@@ -104,6 +104,62 @@
       <width>151</width>
       <height>31</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="nbUnite">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>170</y>
+      <width>151</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="increment">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>230</y>
+      <width>151</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="decrement">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>310</y>
+      <width>151</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="incrementButton">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>260</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>increment</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="decrementButton">
+    <property name="geometry">
+     <rect>
+      <x>640</x>
+      <y>340</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>decrement</string>
     </property>
    </widget>
   </widget>
