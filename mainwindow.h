@@ -19,10 +19,7 @@ public:
     void tag_hat();
     int getNbUniteRestante();
     void actualiserIncrement();
-
-
-
-
+    void MelodyBuzzer();
 
 
 private slots:

@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowTitle("ODALID");
 }
 
 MainWindow::~MainWindow()
@@ -47,7 +48,6 @@ void MainWindow::on_Connect_clicked() {
     status = Version(&MonLecteur);
     if (status == MI_OK){
          ui->Connect->setEnabled(FALSE);
-         ui->Deconnect->setEnabled(TRUE);
          status = LEDBuzzer(&MonLecteur, LED_YELLOW_ON);
 
          // RF field ON
@@ -55,6 +55,12 @@ void MainWindow::on_Connect_clicked() {
 
          ui->Affichage->setText(MonLecteur.version);
          ui->Affichage->update();
+
+         this->MelodyBuzzer();
+
+         ui->connectCarte->setEnabled(TRUE);
+         ui->Deconnect->setEnabled(TRUE);
+
     }
 }
 
@@ -64,9 +70,11 @@ void MainWindow::on_Deconnect_clicked()
     status = LEDBuzzer(&MonLecteur, LED_OFF);
     status = CloseCOM(&MonLecteur);
 
-    if (status == 0) {
+    if (status == MI_OK) {
         ui->Connect->setEnabled(TRUE);
         ui->Deconnect->setEnabled(FALSE);
+        ui->connectCarte->setEnabled(FALSE);
+
 
         ui->Affichage->setText("Lecteur déconnecté");
         ui->Affichage->update();
@@ -107,7 +115,7 @@ void MainWindow::on_connectCarte_clicked()
 {
      status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
 
-     if (status == 0){
+     if (status == MI_OK){
          ui->Saisie->setEnabled(TRUE);
          ui->incrementButton->setEnabled(TRUE);
          ui->decrementButton->setEnabled(TRUE);
@@ -155,7 +163,7 @@ void MainWindow::on_Saisie_clicked()
 
     status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
 
-    if (status == 0) {
+    if (status == MI_OK) {
         QString nomText = ui->nom->toPlainText();
         QString prenomText = ui->prenom->toPlainText();
 
@@ -175,10 +183,6 @@ void MainWindow::on_Saisie_clicked()
         ui->Affichage->setText("Erreur lecture carte");
         ui->Affichage->update();
     }
-
-
-
-
 }
 
 
@@ -186,7 +190,7 @@ void MainWindow::on_Saisie_clicked()
 void MainWindow::on_incrementButton_clicked()
 {
     status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
-    if (status == 0) {
+    if (status == MI_OK) {
         auto dataCompteur = ui->increment->value();
         status = Mf_Classic_Increment_Value(&MonLecteur, TRUE, 14, dataCompteur, 13, AuthKeyB, 3);
         status= Mf_Classic_Restore_Value(&MonLecteur, TRUE, 13, 14, AuthKeyA, 3);
@@ -198,14 +202,12 @@ void MainWindow::on_incrementButton_clicked()
         ui->Affichage->setText("Erreur lecture carte");
         ui->Affichage->update();
     }
-
-
 }
 
 void MainWindow::on_decrementButton_clicked()
 {
     status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
-    if (status == 0) {
+    if (status == MI_OK) {
         auto dataCompteur = ui->decrement->value();
         status = Mf_Classic_Decrement_Value(&MonLecteur, TRUE, 14, dataCompteur, 13, AuthKeyA, 3);
         status= Mf_Classic_Restore_Value(&MonLecteur, TRUE, 13, 14, AuthKeyA, 3);
@@ -229,6 +231,19 @@ int MainWindow::getNbUniteRestante(){
     status = Mf_Classic_Read_Value(&MonLecteur, TRUE, 14, &dataCompteur, AuthKeyA, 3);
 
     return dataCompteur;
+}
+
+void MainWindow::MelodyBuzzer() {
+    for (int i = 5; i > 0 ; i--) {
+        status = LEDBuzzer(&MonLecteur, LED_GREEN_ON+LED_YELLOW_ON+LED_RED_ON+LED_GREEN_ON);
+        DELAYS_MS(30*i);
+        status = LEDBuzzer(&MonLecteur, LED_GREEN_ON);
+        DELAYS_MS(30*i);
+        status = LEDBuzzer(&MonLecteur, LED_GREEN_ON+LED_YELLOW_ON+LED_RED_ON+LED_GREEN_ON);
+        DELAYS_MS(15*i);
+        status = LEDBuzzer(&MonLecteur, LED_GREEN_ON);
+        DELAYS_MS(30*i);
+    }
 }
 
 
