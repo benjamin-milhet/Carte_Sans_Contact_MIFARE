@@ -42,87 +42,44 @@ void MainWindow::on_Connect_clicked() {
     int16_t status = MI_OK;
     MonLecteur.Type = ReaderCDC;
     MonLecteur.device = 0;
-
     status = OpenCOM(&MonLecteur);
-    qDebug() << "OpenCOM" << status;
-
-    status = Version(&MonLecteur);
-    ui->Affichage->setText(MonLecteur.version);
-    ui->Affichage->update();
-
-    status = LEDBuzzer(&MonLecteur, LED_GREEN_ON+LED_YELLOW_ON+LED_RED_ON+LED_GREEN_ON);
-    DELAYS_MS(100);
-    status = LEDBuzzer(&MonLecteur, LED_GREEN_ON);
-
-    char s_buffer[64];
-
-
-    MonLecteur.Type = ReaderCDC;
-    MonLecteur.device = 0;
-
-     switch(MonLecteur.Type)
-     {
-         case ReaderTCP:
-              qDebug() << (s_buffer, "IP : %s", MonLecteur.IPReader);
-         break;
-         case ReaderCDC:
-              qDebug() << (s_buffer, "COM%d", MonLecteur.device);
-         break;
-
-     }
 
     status = Version(&MonLecteur);
     if (status == MI_OK){
-         qDebug() << ("Reader firwmare is %s\n", MonLecteur.version);
-         qDebug() << ("Reader serial is %02X%02X%02X%02X\n", MonLecteur.serial[0], MonLecteur.serial[1], MonLecteur.serial[2], MonLecteur.serial[3]);
-         qDebug() << ("Reader stack is %s\n", MonLecteur.stack);
-    }
+         ui->Connect->setEnabled(FALSE);
+         ui->Deconnect->setEnabled(TRUE);
+         status = LEDBuzzer(&MonLecteur, LED_YELLOW_ON);
 
-    status = LEDBuzzer(&MonLecteur, LED_YELLOW_ON);
-    if (status != MI_OK){
-        printf("LED [FAILED]\n");
-    }
+         // RF field ON
+         RF_Power_Control(&MonLecteur, TRUE, 0);
 
-    // RF field ON
-    RF_Power_Control(&MonLecteur, TRUE, 0);
+         ui->Affichage->setText(MonLecteur.version);
+         ui->Affichage->update();
+    }
 }
 
-
-void MainWindow::on_Saisie_clicked()
+void MainWindow::on_Deconnect_clicked()
 {
+    RF_Power_Control(&MonLecteur, FALSE, 0);
+    status = LEDBuzzer(&MonLecteur, LED_OFF);
+    status = CloseCOM(&MonLecteur);
 
-    status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
+    if (status == 0) {
+        ui->Connect->setEnabled(TRUE);
+        ui->Deconnect->setEnabled(FALSE);
 
-    QString nomText = ui->nom->toPlainText();
-    QString prenomText = ui->prenom->toPlainText();
-
-    char DataInPrenom[16];
-    sprintf(DataInPrenom, prenomText.toUtf8().data(), 16);
-    auto dataPrenom = (uint8_t*)DataInPrenom;
-
-    char DataInNom[16];
-    sprintf(DataInNom, nomText.toUtf8().data(), 16);
-    auto dataNom = (uint8_t*)DataInNom;
-
-    status = Mf_Classic_Write_Block(&MonLecteur, TRUE, 9, dataPrenom, AuthKeyB, 2);
-    status = Mf_Classic_Write_Block(&MonLecteur, TRUE, 10, dataNom, AuthKeyB, 2);
-
-
+        ui->Affichage->setText("Lecteur déconnecté");
+        ui->Affichage->update();
+    }
 }
+
+
+
 
 void MainWindow::tag_hat(){
-    // Halt the tag
-    status = ISO14443_3_A_Halt(&MonLecteur);
-    if (status != MI_OK){
-        qDebug() << ("Failed to halt the tag\n");
-        this->close();
-    }
-
-
     status = LEDBuzzer(&MonLecteur, LED_GREEN_ON+LED_YELLOW_ON+LED_RED_ON+LED_GREEN_ON);
-    DELAYS_MS(1);
+    DELAYS_MS(100);
     status = LEDBuzzer(&MonLecteur, LED_GREEN_ON);
-    //this->init();
 }
 
 
@@ -150,20 +107,77 @@ void MainWindow::on_connectCarte_clicked()
 {
      status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
 
-     uint8_t dataPrenom[16];
-     status = Mf_Classic_Read_Block(&MonLecteur, TRUE, 9, dataPrenom, AuthKeyA, 2);
+     if (status == 0){
+         ui->Saisie->setEnabled(TRUE);
+         ui->incrementButton->setEnabled(TRUE);
+         ui->decrementButton->setEnabled(TRUE);
 
-     uint8_t dataNom[16];
-     status = Mf_Classic_Read_Block(&MonLecteur, TRUE, 10, dataNom, AuthKeyA, 2);
+         uint8_t dataPrenom[16];
+         status = Mf_Classic_Read_Block(&MonLecteur, TRUE, 9, dataPrenom, AuthKeyA, 2);
+
+         uint8_t dataNom[16];
+         status = Mf_Classic_Read_Block(&MonLecteur, TRUE, 10, dataNom, AuthKeyA, 2);
 
 
-     ui->nom->setText((char*)dataNom);
-     ui->nom->update();
+         ui->nom->setText((char*)dataNom);
+         ui->nom->update();
 
-     ui->prenom->setText((char*)dataPrenom);
-     ui->prenom->update();
+         ui->prenom->setText((char*)dataPrenom);
+         ui->prenom->update();
 
-    this->actualiserIncrement();
+         ui->Affichage->setText("Carte détectée");
+         ui->Affichage->update();
+
+        this->actualiserIncrement();
+
+        this->tag_hat();
+     } else {
+         ui->nom->setText("Erreur lecture carte");
+         ui->nom->update();
+
+         ui->prenom->setText("Erreur lecture carte");
+         ui->prenom->update();
+
+         ui->nbUnite->setPlainText("Erreur lecture carte");
+         ui->nbUnite->update();
+
+         ui->Affichage->setText("Erreur lecture carte");
+         ui->Affichage->update();
+
+         ui->Saisie->setEnabled(FALSE);
+         ui->incrementButton->setEnabled(FALSE);
+         ui->decrementButton->setEnabled(FALSE);
+     }
+}
+
+void MainWindow::on_Saisie_clicked()
+{
+
+    status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
+
+    if (status == 0) {
+        QString nomText = ui->nom->toPlainText();
+        QString prenomText = ui->prenom->toPlainText();
+
+        char DataInPrenom[16];
+        sprintf(DataInPrenom, prenomText.toUtf8().data(), 16);
+        auto dataPrenom = (uint8_t*)DataInPrenom;
+
+        char DataInNom[16];
+        sprintf(DataInNom, nomText.toUtf8().data(), 16);
+        auto dataNom = (uint8_t*)DataInNom;
+
+        status = Mf_Classic_Write_Block(&MonLecteur, TRUE, 9, dataPrenom, AuthKeyB, 2);
+        status = Mf_Classic_Write_Block(&MonLecteur, TRUE, 10, dataNom, AuthKeyB, 2);
+
+        this->tag_hat();
+    } else {
+        ui->Affichage->setText("Erreur lecture carte");
+        ui->Affichage->update();
+    }
+
+
+
 
 }
 
@@ -172,22 +186,37 @@ void MainWindow::on_connectCarte_clicked()
 void MainWindow::on_incrementButton_clicked()
 {
     status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
-    auto dataCompteur = ui->increment->value();
-    status = Mf_Classic_Increment_Value(&MonLecteur, TRUE, 14, dataCompteur, 13, AuthKeyB, 3);
-    status= Mf_Classic_Restore_Value(&MonLecteur, TRUE, 13, 14, AuthKeyA, 3);
+    if (status == 0) {
+        auto dataCompteur = ui->increment->value();
+        status = Mf_Classic_Increment_Value(&MonLecteur, TRUE, 14, dataCompteur, 13, AuthKeyB, 3);
+        status= Mf_Classic_Restore_Value(&MonLecteur, TRUE, 13, 14, AuthKeyA, 3);
 
-    this->actualiserIncrement();
+        this->actualiserIncrement();
+
+        this->tag_hat();
+    } else {
+        ui->Affichage->setText("Erreur lecture carte");
+        ui->Affichage->update();
+    }
+
 
 }
 
 void MainWindow::on_decrementButton_clicked()
 {
     status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
-    auto dataCompteur = ui->decrement->value();
-    status = Mf_Classic_Decrement_Value(&MonLecteur, TRUE, 14, dataCompteur, 13, AuthKeyA, 3);
-    status= Mf_Classic_Restore_Value(&MonLecteur, TRUE, 13, 14, AuthKeyA, 3);
+    if (status == 0) {
+        auto dataCompteur = ui->decrement->value();
+        status = Mf_Classic_Decrement_Value(&MonLecteur, TRUE, 14, dataCompteur, 13, AuthKeyA, 3);
+        status= Mf_Classic_Restore_Value(&MonLecteur, TRUE, 13, 14, AuthKeyA, 3);
 
-    this->actualiserIncrement();
+        this->actualiserIncrement();
+
+        this->tag_hat();
+    } else {
+        ui->Affichage->setText("Erreur lecture carte");
+        ui->Affichage->update();
+    }
 }
 
 void MainWindow::actualiserIncrement(){
@@ -196,10 +225,10 @@ void MainWindow::actualiserIncrement(){
 }
 
 int MainWindow::getNbUniteRestante(){
-    status = ISO14443_3_A_PollCard(&MonLecteur, atq, sak, uid, &uid_len);
-
     uint32_t dataCompteur = 0;
     status = Mf_Classic_Read_Value(&MonLecteur, TRUE, 14, &dataCompteur, AuthKeyA, 3);
 
     return dataCompteur;
 }
+
+

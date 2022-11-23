@@ -38,6 +38,8 @@ private slots:
 
     void on_decrementButton_clicked();
 
+    void on_Deconnect_clicked();
+
 private:
     Ui::MainWindow *ui;
 
