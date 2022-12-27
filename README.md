@@ -25,7 +25,7 @@ La fonction "tag_hat" et une fonction reprise de la documentation fournie permet
 ## Quitter
 La fonction "on_Quitter_clicked" est une fonction qui ferme l'application lorsque l'on clique sur le bouton quitter.
 
-##Conversions
+## Conversions
 Les fonctions "convertirIntToQstring" et "convertirQstringToChar"  sont des fonctions convertissent respectivement un en entier en Qstring et une Qstring en char.
 ces deux fonction permettent des conversions de type qui nous seront utiles lors de l'écriture de données dans la carte.
 
