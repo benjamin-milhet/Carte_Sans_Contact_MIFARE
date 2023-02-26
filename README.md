@@ -37,3 +37,36 @@ La fonction "tag\_hat" et une fonction reprise de la documentation fournie perme
 
 La fonction "on\_Quitter\_clicked" est une fonction qui ferme l'application lorsque l'on clique sur le bouton quitter.
 
+### Conversions
+
+Les fonctions "convertirIntToQstring" et "convertirQstringToChar" sont des fonctions convertissent respectivement un en entier en Qstring et une Qstring en char. ces deux fonction permettent des conversions de type qui nous seront utiles lors de l'écriture de données dans la carte.
+
+### Affichage des informations
+
+La fonction "on\_connectCarte\_clicked" est la fonction qui permet d'afficher les informations contenues dans la carte. Tout d'abord on rentre dans une condition qui vérifie que le statut et bon ce qui signifie qu'une carte est bien posée sur le lecteur et que l'on peut lire ses données. Si la condition est vérifié on passe les boutons de saisie, d'incrément et décrément en "enable". Il est donc à présent possible d'écrire et de modifier la valeur du porte monnaie. Ensuite on utilise la fonction "Mf\_Classic\_Read\_Block" pour lire le prénom et le nom dans les bon blocs. Enfin on appelle la fonction update pour mettre à jour l'affichage. Si la condition sur le statut n'était pas vérifié les boutons seraient restés désactivés et le message "Erreur lecture carte" se serait affiché dans les zones des saisie.
+
+### Ecriture du Nom et du Prénom
+
+La fonction "on\_Saisie\_clicked" permet d'enregistrer dans la carte les informations écrites par l'utilisateur dans les cases de saisie du nom et du prénom. Avant toute chose on vérifie que le statut est bon, ensuite on place dans des variables les Qstrings saisient et enfin on écrit dans les blocs correspondants aux nom et prénom les variables correspondantes. Si la condition sur le statut n'était pas vérifiée on affiche "Erreur lecture carte" sur la fenêtre de saisie et on enregistre aucune information.
+
+### Incrément et Décrément
+
+La fonction "on\_incrementButton\_clicked" utilise les fonctions "Mf\_Classic\_Increment\_Value" et "Mf\_Classic\_Restore\_Value" pour incrémenter la valeur du porte-monnaie et enregistrer cette valeur dans un bloc de backup de la carte lorsque l'on clique sur le bouton. Idem avec pour la fonction "on\_decrementButton\_clicked" pour le décrément.
+
+### Actualisation de l'incrément
+
+La fonction "actualiserIncrement" permet d'actualiser la valeur du porte-monnaie lorsque l'on souhaite incrémenter ou décrémenter.
+
+### Lecture du porte monnaie
+
+La fonction "getNbUniteRestante" permet de retourner la valeur du porte monnaie en allant chercher l'information contenue dans la carte grâce à la fonction "Mf\_Classic\_Read\_Value".
+
+### Son de lancement
+
+En bonus nous avons créer un petit son de lancement lorsque la carte se connecte. Il s'agit de la fonction "MelodyBuzzer".
+
+## Conclusion
+
+Ce projet nous a permis d'approfondir nos connaissances avec le langage C++ et le framework Qt Creator et d'utiliser nos connaissances vues pendant les cours afin de réaliser une application visuelle permettant de contrôler un lecteur de cartes sans contact. Nous avions à notre disposition une librairie qui nous était nouvelle et nous devions chercher à travers sa documentation l'ensemble des fonctions qui nous a été utile pur mener à bien ce projet. Ce projet nous a permis de combiner les notions vues en cours et en TD sur le comportement et le fonctionnement des cartes MIFARE et le fonctionnement de leur mémoire.
+
+
