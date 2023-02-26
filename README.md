@@ -9,11 +9,19 @@ Le but de ce TP est le développement d'une interface graphique pour un lecteur 
 
 #### Vision globale
 
+![alt text](https://github.com/benjamin-milhet/Carte_Sans_Contact_MIFARE/blob/main/accueil.png?raw=true)
+
 #### Détails des différentes parties de l’application
+
+![alt text](https://github.com/benjamin-milhet/Carte_Sans_Contact_MIFARE/blob/main/partie1.png?raw=true)
 
 Cette partie comporte 3 boutons importants pour se connecter et de déconnecter du lecteur de cartes. Le premier bouton "Se connecter" permet de se connecter au lecteur de cartes. Le bouton "Se déconnecter" permet de se déconnecter du lecteur de cartes. Le troisième et dernier bouton "Sélectionner la carte" permet de récupérer les informations d'une carte sans contact. A droite, il y a une zone d'affichage qui nous permettant d'afficher la version du lecteur ou si nous rencontrons un problème lors de la lecture d'une carte. Tous les boutons sauf le bouton "Se connecter" sont désactiver au lancement de l'application et sont activés au moment où le lecteur de cartes est connecté.
 
+![alt text](https://github.com/benjamin-milhet/Carte_Sans_Contact_MIFARE/blob/main/partie2.png?raw=true)
+
 Sur cette interface sont affichés le nom et le prénom du propriétaire de la carte scanner. Il est possible d'éditer directement ces deux paramètres précédents et les mettre à jour en ayant la carte toujours sur le lecteur et d'appuyer sur le bouton "Mettre à jour".
+
+![alt text](https://github.com/benjamin-milhet/Carte_Sans_Contact_MIFARE/blob/main/partie3.png?raw=true)
 
 Sur cette interface est affiché le nombre d'unité restante sur la carte scanner. Il est possible de renseigner une valeur pour incrémenter ou décrémenter celle-ci puis d'appuyer sur le bouton respectif tout en ayant la carte sur le lecteur.
 
